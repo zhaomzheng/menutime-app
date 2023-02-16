@@ -1,0 +1,245 @@
+import { useState, useEffect } from 'react';
+function AddressModal({ id, isOpen, onClose, onSave, addressToEdit }) {
+   const [address, setAddress] = useState('');
+   const [apt, setApt] = useState('');
+   const [deliveryInstructions, setDeliveryInstructions] = useState('');
+    useEffect(() => {
+     if (addressToEdit) {
+       setAddress(addressToEdit.address);
+       setApt(addressToEdit.apt);
+       setDeliveryInstructions(addressToEdit.deliveryInstructions);
+     }
+   }, [addressToEdit]);
+    const handleSave = () => {
+     onSave({ address, apt, deliveryInstructions });
+   };
+    return (
+   <div className={`fixed inset-0 ${isOpen ? '' : 'hidden'} overflow-y-auto`} aria-labelledby="modal-title" role="dialog" aria-modal="true">
+     <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={onClose}></div>
+       <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+       <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">{addressToEdit ? 'Edit Address' : 'Add New Address'}</h3>
+           <div className="grid grid-cols-2 gap-4">
+             <div className="col-span-2">
+               <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                 Address
+               </label>
+               <input
+                 id="address"
+                 name="address"
+                 type="text"
+                 value={address}
+                 onChange={(e) => setAddress(e.target.value)}
+                 className="border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border rounded-md p-2"
+               />
+             </div>
+             <div className="col-span-2 sm:col-span-1">
+               <label htmlFor="apt" className="block text-sm font-medium text-gray-700 mb-2">
+                 Apt / Suite / Floor
+               </label>
+               <input
+                 id="apt"
+                 name="apt"
+                 type="text"
+                 value={apt}
+                 onChange={(e) => setApt(e.target.value)}
+                 className="border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border rounded-md p-2"
+               />
+             </div>
+             <div className="col-span-2">
+               <label htmlFor="deliveryInstructions" className="block text-sm font-medium text-gray-700 mb-2">
+                 Delivery Instructions
+               </label>
+               <textarea
+                 id="deliveryInstructions"
+                 name="deliveryInstructions"
+                 value={deliveryInstructions}
+                 onChange={(e) => setDeliveryInstructions(e.target.value)}
+                 className="border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border rounded-md p-2"
+               />
+             </div>
+           </div>
+         </div>
+         <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+           <button
+                         type="button"
+                         onClick={handleSave}
+                         className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                       >
+                         {addressToEdit ? 'Save Changes' : 'Add Address'}
+                       </button>
+                       <button
+                         type="button"
+                         onClick={onClose}
+                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                       >
+                         Cancel
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             );
+           }
+           function AddressItem({ id, address, apt, deliveryInstructions, index, onEdit, onRemove, setAddressToEdit, addresses }) {
+               const [isHovered, setIsHovered] = useState(false);
+            
+               const handleEditClick = () => {
+                 onEdit(id);
+                 setAddressToEdit({ id, address, apt, deliveryInstructions, index });
+               };
+            
+               const handleRemoveClick = () => {
+                 onRemove(index);
+               };
+            
+               return (
+                 <li
+                   className="border-b border-gray-200 py-3 px-4 flex items-center justify-between cursor-pointer hover:bg-gray-50"
+                   onMouseEnter={() => setIsHovered(true)}
+                   onMouseLeave={() => setIsHovered(false)}
+                 >
+                   <div>
+                     <h4 className="font-medium">{address}</h4>
+                     <div className="text-gray-500">
+                       {apt && (
+                         <span className="inline-block mr-2">
+                           Apt / Suite / Floor: {apt}
+                         </span>
+                       )}
+                       {deliveryInstructions && (
+                         <span className="inline-block">
+                           Delivery Instructions: {deliveryInstructions}
+                         </span>
+                       )}
+                     </div>
+                   </div>
+                   {isHovered && (
+                     <div>
+                       <button
+                         type="button"
+                         onClick={handleEditClick}
+                         className="inline-block mr-2 text-blue-500 hover:text-blue-700"
+                       >
+                         Edit
+                       </button>
+                       <button
+                         type="button"
+                         onClick={handleRemoveClick}
+                         className="inline-block text-red-500 hover:text-red-700"
+                       >
+                         Remove
+                       </button>
+                     </div>
+                   )}
+                 </li>
+               );
+             }
+            
+
+
+
+
+
+
+           export default function AddressList() {
+               const [addresses, setAddresses] = useState([
+                   {
+                       id: 1,
+                       address: '123 Main St',
+                       apt: '',
+                       deliveryInstructions: 'Leave package at front door'
+                     },
+                     {
+                       id: 2,
+                       address: '456 Maple St',
+                       apt: 'Apt 5B',
+                       deliveryInstructions: 'Leave package with neighbor'
+                     }
+               ]);
+               const [isModalOpen, setIsModalOpen] = useState(false);
+               const [addressToEdit, setAddressToEdit] = useState(null);
+            
+               const handleAddClick = () => {
+                 setAddressToEdit(null);
+                 setIsModalOpen(true);
+               };
+            
+               const handleEditClick = (id) => {
+                const addressToEdit = addresses.find(a => a.id === id);
+                if (addressToEdit) {
+                  const index = addresses.findIndex(a => a.id === id);
+                  setAddressToEdit({ ...addressToEdit, index });
+                  setIsModalOpen(true);
+                }
+              };
+              
+               const handleRemoveClick = (index) => {
+                 setAddresses(addresses.filter((_, i) => i !== index));
+               };
+               const handleSaveAddress = ({ address, apt, deliveryInstructions }) => {
+                if (addressToEdit) {
+                  const index = addresses.findIndex(a => a.id === addressToEdit.id);
+                  const updatedAddresses = [...addresses];
+                  updatedAddresses[index] = { ...updatedAddresses[index], address, apt, deliveryInstructions };
+                  setAddresses(updatedAddresses); // set the new state here
+                } else {
+                  setAddresses([
+                    ...addresses,
+                    { id: Date.now(), address, apt, deliveryInstructions } // generate a new id for new addresses
+                  ]);
+                }
+                setIsModalOpen(false);
+                setAddressToEdit(null);
+              };
+                
+            
+               return (
+                 <div>
+                   <h2 className="text-lg font-medium mb-2">Addresses</h2>
+                   {addresses.length === 0 && (
+                     <p>No addresses</p>
+                   )}
+                   {addresses.length > 0 && (
+                     <ul className="divide-y divide-gray-200">
+                       {addresses.map((address, index) => (
+                         <AddressItem
+                           key={`${address.address}-${address.apt}-${address.deliveryInstructions}`}
+                           address={address.address}
+                           apt={address.apt}
+                           deliveryInstructions={address.deliveryInstructions}
+                           index={index}
+                           onEdit={handleEditClick}
+                           onRemove={handleRemoveClick}
+                           setAddressToEdit={setAddressToEdit}
+                         />
+                       ))}
+                     </ul>
+                   )}
+                   <div className="mt-4">
+                     <button
+                       type="button"
+                       onClick={handleAddClick}
+                       className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                     >
+                       Add Address
+                     </button>
+                   </div>
+                   <AddressModal
+                     isOpen={isModalOpen}
+                     onClose={() => {
+                       setIsModalOpen(false);
+                       setAddressToEdit(null);
+                     }}
+                     onSave={handleSaveAddress}
+                     addressToEdit={addressToEdit}
+                   />
+                 </div>
+               );
+             }
+            
+
+
+
