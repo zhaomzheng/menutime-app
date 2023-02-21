@@ -34,6 +34,8 @@ function classNames(...classes) {
 }
 
 export default function Example() {
+    const [currentTab, setCurrentTab] = useState(0);
+
   // Ref for sections
   const sections = useRef([]);
 
