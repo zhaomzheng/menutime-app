@@ -141,8 +141,7 @@ export default function Example() {
                                                     {tab.name}
                                                 </h4>
                                                 <div className="pt-3">
-                                                    <ItemCards />
-                                                </div>
+                                                                                            </div>
                                             </div>
                                         ))}
                                     </div>
