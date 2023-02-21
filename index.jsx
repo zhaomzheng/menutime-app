@@ -1,76 +1,174 @@
-import { Fragment, useState } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { useState, useEffect, useRef, Fragment } from "react";
+import { Menu, Popover, Transition } from "@headlessui/react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-const Menu = [
-  { title: 'All Day Menu', start_time: '12:00PM', end_time: '12:00PM', current: true },
-  { title: 'Lunch Menu', start_time: '12:00PM', end_time: '12:00PM', current: false },
-]
+import OrderNavbar from "../components/common/navbars/order-navbar";
+import OrderHeader from "../components/order-page/order-header";
+import OrderMenu from "../components/order-page/order-menu";
+import ItemCards from "../components/order-page/components/item-cards.component";
+import RestaurantInfoModal from "../components/order-page/components/restaurant-info-modal.component";
+import MenuSelect
+ from "../components/order-page/components/menu-select.component";
+const tabs = [
+    { name: "Chicken", href: "#applied", current: false },
+    { name: "Dinner", href: "#phone-screening", current: false },
+    { name: "Burgers", href: "#interview", current: true },
+    { name: "Fries", href: "#offer", current: false },
+    { name: "Subs", href: "#hired", current: false },
+];
 
+const menus = [
+    { name: 'All Day Menu', value: 'all_day_menu' },
+    { name: 'Breakfast Menu', value: 'breakfast_menu' },
+    { name: 'Lunch Menu', value: 'lunch_menu' },
+  ];
+  
+// Utility function to join class names
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+    return classes.filter(Boolean).join(" ");
 }
 
-export default function MenuSelect() {
-  const [selected, setSelected] = useState(Menu[0])
+export default function Example() {
+    const [currentTab, setCurrentTab] = useState(
+        tabs.findIndex((tab) => tab.current)
+    );
 
-  return (
-    <Listbox value={selected} onChange={setSelected}>
-      {({ open }) => (
+    // Ref for sections
+    const sections = useRef([]);
+
+    // State for sticky header
+    const [isSticky, setSticky] = useState(false);
+
+    // Effect to handle window scroll event
+    useEffect(() => {
+        function handleScroll() {
+            const scrollY = window.scrollY;
+
+            for (let i = 0; i < sections.current.length; i++) {
+                if (scrollY >= sections.current[i].offsetTop - 200) {
+                    setCurrentTab(i);
+                }
+            }
+
+            if (sections.current[0].offsetTop - 250 <= scrollY) {
+                setSticky(true);
+            } else {
+                setSticky(false);
+            }
+        }
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    return (
         <>
-          <Listbox.Label className="sr-only"> Change published status </Listbox.Label>
-          <div className="relative">
-            <div className="inline-flex ">
-              <div className="inline-flex ">
-                <div className="inline-flex  py-2  pr-1 text-black ">
-                  <p className="text-sm font-poppins font-semibold">{selected.title}</p>
-                </div>
-                <Listbox.Button className="inline-flex items-center p-2 text-sm font-medium text-white h focus:outline-none  focus:ring-offset-2 focus:ring-offset-gray-50">
-                  <span className="sr-only">Change published status</span>
-                  <ChevronDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
-                </Listbox.Button>
-              </div>
+            <div className="sticky top-0 z-10">
+                <OrderNavbar />
             </div>
+			<div className="bg-gray-50"> 			<OrderHeader />
+</div>
 
-            <Transition
-              show={open}
-              as={Fragment}
-              leave="transition ease-in duration-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Listbox.Options className="absolute left-0 z-10 mt-2 w-48 origin-top-right divide-y divide-gray-200 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                {Menu.map((option) => (
-                  <Listbox.Option
-                    key={option.title}
-                    className={({ active }) =>
-                      classNames(
-                        active ? 'text-black bg-gray-100' : 'text-gray-900',
-                        'cursor-default select-none p-4 text-sm font-poppins'
-                      )
-                    }
-                    value={option}
-                  >
-                    {({ selected, active }) => (
-                      <div className="flex flex-col">
-                        <div className="flex justify-between">
-                          <p className={selected ? ' font-medium text-menured-600' : 'font-medium'}>{option.title}</p>
-  
-                        </div>
-                        <p className={classNames(selected ? 'text-menured-600 ' : 'text-gray-900 ', 'mt-1 text-xs' ) }>
-                          {option.start_time } - {""}
-                          {option.end_time }
+            <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+                <h1 class="sr-only">Page title</h1>
+                {/* Main 3 column grid */}
+                <div class="pt-4 grid grid-cols-1  items-start gap-4 lg:grid-cols-3 lg:gap-8">
+                    {/* Left column */}
+                    <div class="   sticky grid grid-cols-1 gap-4 lg:col-span-2 left-column left-column-width">
+                        <section aria-labelledby="sectioan-1-title">
+                            <h2 class="sr-only" id="section-1-title">
+                                Section title
+                            </h2>
+                            <div class=" rounded-lg  bg-white ">
+                                <div class="sticky top-0 pt-2">
+                                    <div className="sticky top-16 z-10 bg-white border-b border-gray-200">
+                                        {/* Search Bar and Menu Toggle */}
+                                        <div
+                                            className={
+                                                "container mx-auto md:flex md:items-center md:justify-between py-4 "
+                                            }
+                                        >
 
-                        </p>
-                      </div>
-                    )}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
-            </Transition>
-          </div>
+											<MenuSelect />
+                                   
+                                        </div>
+                                        {/* Tabs */}
+                                        <div className="container mx-auto mt-4 ">
+                                            <nav className="-mb-px flex overflow-x-auto">
+                                                {tabs.map((tab, i) => (
+                                                    <a
+                                                        key={tab.name}
+                                                        className={classNames(
+                                                            i === currentTab
+                                                                ? "border-menured-600 text-menured-600"
+                                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
+                                                            "whitespace-nowrap pb-4 px-3 border-b-4 rounded font-semibold font-poppins text-xs"
+                                                        )}
+                                                        onClick={() => {
+                                                            setCurrentTab(i);
+                                                            window.scrollTo({
+                                                                top:
+                                                                    sections
+                                                                        .current[
+                                                                        i
+                                                                    ]
+                                                                        .offsetTop -
+                                                                    100,
+                                                                behavior:
+                                                                    "smooth",
+                                                            });
+                                                        }}
+                                                    >
+                                                        {tab.name}
+                                                    </a>
+                                                ))}
+                                            </nav>
+                                        </div>
+                                    </div>
+                                    <div className="pt-2">
+                                        {tabs.map((tab, i) => (
+                                            <div
+                                                key={tab.name}
+                                                ref={(el) => {
+                                                    sections.current[i] = el;
+                                                }}
+                                            >
+                                                <h4
+                                                    id={tab.href.substr(1)}
+                                                    className="pt-8 font-poppins font-semibold text-lg text-gray-900"
+                                                >
+                                                    {tab.name}
+                                                </h4>
+                                                <div className="pt-3">
+                                                    <ItemCards />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    {/* Right column */}
+					<div className="grid grid-cols-1 gap-4">
+                <section aria-labelledby="section-2-title">
+                  <h2 className="sr-only" id="section-2-title">
+                    Section title
+                  </h2>
+                  <div className="overflow-hidden rounded-lg bg-white shadow">
+                    <div className="p-6">{
+						<div className="flex flex-col">
+
+						</div>
+
+					}</div>
+                  </div>
+                </section>
+              </div>
+                </div>
+            </div>
         </>
-      )}
-    </Listbox>
-  )
+    );
 }
