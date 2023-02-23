@@ -9,22 +9,57 @@ import OrderMenu from "../components/order-page/order-menu";
 import ItemCards from "../components/order-page/components/item-cards.component";
 import RestaurantInfoModal from "../components/order-page/components/restaurant-info-modal.component";
 import MenuSelect from "../components/order-page/components/menu-select.component";
+
 const menus = [
   {
-    name: "breakfast",
-    tabs: ["Eggs", "Toast", "Coffee"],
+    menuName: 'Lunch Menu',
+    startTime: '12:00PM',
+    endTime: '12:00PM',
+    menuCategories: [
+        {
+        categoryName: "Eggs", 
+        categoryAvailable: true
+        },
+        {
+        categoryName: "Omelettes", 
+        categoryAvailable: true
+        },
+        {
+        categoryName: "Pancakes", 
+        categoryAvailable: true
+        },
+        {
+        categoryName: "Waffles", 
+        categoryAvailable: true
+        },
+        {
+        categoryName: "Sides", 
+        categoryAvailable: true
+        },
+    ]
   },
   {
-    name: "brunch",
-    tabs: ["Pancakes", "Bacon", "Mimosa"],
-  },
-  {
-    name: "lunch",
-    tabs: ["Sandwich", "Soup", "Salad"],
-  },
-  {
-    name: "dinner",
-    tabs: ["Steak", "Pasta", "Wine"],
+    menuName: 'Dinner Menu',
+    startTime: '12:00PM',
+    endTime: '12:00PM',
+    menuCategories: [
+        {
+        categoryName: "Appetizers", 
+        categoryAvailable: true
+        },
+        {
+        categoryName: "Entrees", 
+        categoryAvailable: true
+        },
+        {
+        categoryName: "Sides", 
+        categoryAvailable: true
+        },
+        {
+        categoryName: "Desserts", 
+        categoryAvailable: true
+        },
+    ]
   },
 ];
 
@@ -34,7 +69,8 @@ function classNames(...classes) {
 }
 
 export default function Example() {
-    const [currentTab, setCurrentTab] = useState(0);
+  const [currentMenu, setCurrentMenu] = useState(menus[0]);
+  const [currentTab, setCurrentTab] = useState(0);
 
   // Ref for sections
   const sections = useRef([]);
@@ -64,6 +100,10 @@ export default function Example() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleMenuSelect = (selectedMenu) => {
+    setCurrentMenu(selectedMenu);
+  };
+
   return (
     <>
       <div className="sticky top-0 z-10">
@@ -71,8 +111,9 @@ export default function Example() {
       </div>
       <div className="bg-gray-50">
         {" "}
+       
         <OrderHeader />
-      </div>
+        </div>
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <h1 class="sr-only">Page title</h1>
         {/* Main 3 column grid */}
@@ -94,15 +135,16 @@ export default function Example() {
                     >
                       <MenuSelect
                         menus={menus}
-                        onChange={(menuName) => console.log(menuName)}
+                        onChange={handleMenuSelect}
                       />
+                      
                     </div>
                     {/* Tabs */}
                     <div className="container mx-auto mt-4 ">
                       <nav className="-mb-px flex overflow-x-auto">
-                        {menus.map((menu, i) => (
+                        {currentMenu.menuCategories.map((category, i) => (
                           <a
-                            key={menu.name}
+                            key={category.categoryName}
                             className={classNames(
                               i === currentTab
                                 ? "border-menured-600 text-menured-600"
@@ -117,31 +159,29 @@ export default function Example() {
                               });
                             }}
                           >
-                            {menu.name}
+                            {category.categoryName}
                           </a>
                         ))}
                       </nav>
                     </div>
                   </div>
                   <div className="pt-2">
-                    {menus.map((menu, i) => (
+                    {currentMenu.menuCategories.map((category, i) => (
                       <div
-                        key={menu.name}
+                        key={category.categoryName}
                         ref={(el) => {
                           sections.current[i] = el;
                         }}
                       >
                         <h4
-                          id={menu.name}
+                          id={category.categoryName}
                           className="pt-8 font-poppins font-semibold text-lg text-gray-900"
                         >
-                          {menu.name}
+                          {category.categoryName}
                         </h4>
                         <div className="pt-3">
                           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {menu.tabs.map((tab, i) => (
-                              <ItemCards key={tab} tab={tab} />
-                            ))}
+                            {/* Render item cards for this category here */}
                           </div>
                         </div>
                       </div>
@@ -160,12 +200,7 @@ export default function Example() {
               </h2>
               <div className="overflow-hidden rounded-lg bg-white shadow">
                 <div className="p-6">
-                  <ItemCards tab="Soup" />
-                  <ItemCards tab="Salad" />
-                  <ItemCards tab="Sandwich" />
-                  <ItemCards tab="Steak" />
-                  <ItemCards tab="Pasta" />
-                  <ItemCards tab="Wine" />
+          
                 </div>
               </div>
             </section>
